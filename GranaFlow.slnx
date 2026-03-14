@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GranaFlow.API/GranaFlow.API.csproj" />
+  <Project Path="GranaFlow.Application/GranaFlow.Application.csproj" Id="7ec1a23a-f2c0-44ab-a020-37852577a3e0" />
+  <Project Path="GranaFlow.Domain/GranaFlow.Domain.csproj" Id="68fa3602-db9d-4667-9a16-edf26730e253" />
+  <Project Path="GranaFlow.Infrastructure/GranaFlow.Infrastructure.csproj" Id="cd6005d0-e039-4fb2-b60e-5c370531d8bd" />
+</Solution>

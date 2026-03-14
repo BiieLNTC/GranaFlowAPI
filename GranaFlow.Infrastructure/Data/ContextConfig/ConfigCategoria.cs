@@ -1,0 +1,20 @@
+﻿using GranaFlow.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace GranaFlow.Infrastructure.Data.ContextConfig
+{
+    public class ConfigCategoria : IEntityTypeConfiguration<Categoria>
+    {
+        public void Configure(EntityTypeBuilder<Categoria> builder)
+        {
+            builder.HasOne<Usuario>()
+            .WithMany()
+            .HasForeignKey(t => t.UsuarioId)
+            .OnDelete(DeleteBehavior.Cascade);
+        }
+    }
+}
