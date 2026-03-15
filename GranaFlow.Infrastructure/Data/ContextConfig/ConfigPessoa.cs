@@ -11,6 +11,18 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
     {
         public void Configure(EntityTypeBuilder<Pessoa> builder)
         {
+            builder.HasKey(c => c.Id);
+
+            builder.Property(c => c.Nome)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder.Property(c => c.DataNascimento)
+                .IsRequired();
+
+            builder.Property(c => c.CadastradoEm)
+                .IsRequired();
+
             builder.HasOne<Usuario>()
                 .WithMany()
                 .HasForeignKey(t => t.UsuarioId)

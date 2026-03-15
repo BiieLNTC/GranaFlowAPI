@@ -21,9 +21,15 @@ namespace GranaFlow.Domain.Entities
         [ForeignKey(nameof(Categoria))]
         public int CategoriaId { get; set; }
 
+        public Categoria Categoria { get; set; }
+
         [Required]
         [ForeignKey(nameof(Pessoa))]
         public int PessoaId { get; set; }
+
+        public Pessoa Pessoa { get; set; }
+
+        public DateTime DataTransacao { get; set; }
 
         [Required]
         [MaxLength(400)]
@@ -38,5 +44,15 @@ namespace GranaFlow.Domain.Entities
 
         [Required]
         public DateTime CadastradoEm { get; set; } = DateTime.UtcNow;
+
+        public void Atualizar(int categoriaId, int pessoaId, DateTime dataTransacao, string descricao, ETipoTransacao tipo, decimal valor)
+        {
+            CategoriaId = categoriaId;
+            PessoaId = pessoaId;
+            DataTransacao = dataTransacao;
+            Descricao = descricao;
+            Tipo = tipo;
+            Valor = valor;
+        }
     }
 }

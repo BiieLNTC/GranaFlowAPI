@@ -37,9 +37,11 @@ namespace GranaFlow.API.Extensions
         {
             services.AddScoped<UsuarioService>();
             services.AddScoped<CategoriaService>();
+            services.AddScoped<PessoaService>();
 
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+            services.AddScoped<IPessoaRepository, PessoaRepository>();
 
             services.AddScoped<ITokenService, TokenService>();
 

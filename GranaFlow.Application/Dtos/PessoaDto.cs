@@ -1,21 +1,23 @@
-﻿using System;
+﻿using GranaFlow.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace GranaFlow.Domain.Entities
+namespace GranaFlow.Application.Dtos
 {
-    public class Pessoa
+    public class PessoaDto
     {
         public int Id { get; set; }
         public int UsuarioId { get; set; }
         public string Nome { get; set; }
         public DateTime DataNascimento { get; set; }
-        public DateTime CadastradoEm { get; set; } = DateTime.UtcNow;
 
-        public void Atualizar(string nome, DateTime dataNascimento)
+        public PessoaDto(int id, int usuarioId, string nome, DateTime dataNascimento)
         {
+            Id = id;
+            UsuarioId = usuarioId;
             Nome = nome;
             DataNascimento = dataNascimento;
         }

@@ -11,10 +11,26 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
     {
         public void Configure(EntityTypeBuilder<Categoria> builder)
         {
+            builder.HasKey(c => c.Id);
+
+            builder.Property(c => c.Descricao)
+                .IsRequired()
+                .HasMaxLength(400);
+
+            builder.Property(c => c.Cor)
+                .IsRequired()
+                .HasMaxLength(150);
+
+            builder.Property(c => c.Finalidade)
+                .IsRequired();
+
+            builder.Property(c => c.CadastradoEm)
+                .IsRequired();
+
             builder.HasOne<Usuario>()
-            .WithMany()
-            .HasForeignKey(t => t.UsuarioId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(t => t.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

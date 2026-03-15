@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,4 +30,9 @@
 	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="ToolSharp">
+			<HintPath>..\LibsDll\ToolSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

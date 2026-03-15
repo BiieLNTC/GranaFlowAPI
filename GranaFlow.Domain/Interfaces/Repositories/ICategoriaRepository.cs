@@ -9,6 +9,9 @@ namespace GranaFlow.Domain.Interfaces.Repositories
     {
         Task<bool> ExistsAsync(string descricao, int id = 0);
         Task<bool> CreateAsync(Categoria categoria);
-        Task<bool> UpdateAsync(UpdateCategoriaDto updateCategoria);
+        Task<bool> UpdateAsync(Categoria categoria);
+        Task<Categoria> GetByIdAsync(int id);
+        Task<bool> DeleteAsync(int id);
+        Task<List<Categoria>> GetAllAsync();
     }
 }
