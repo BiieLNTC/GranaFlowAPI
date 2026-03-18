@@ -21,13 +21,13 @@ namespace GranaFlow.Domain.Entities
         [ForeignKey(nameof(Categoria))]
         public int CategoriaId { get; set; }
 
-        public Categoria Categoria { get; set; }
+        public virtual Categoria Categoria { get; set; }
 
         [Required]
         [ForeignKey(nameof(Pessoa))]
         public int PessoaId { get; set; }
 
-        public Pessoa Pessoa { get; set; }
+        public virtual Pessoa Pessoa { get; set; }
 
         public DateTime DataTransacao { get; set; }
 

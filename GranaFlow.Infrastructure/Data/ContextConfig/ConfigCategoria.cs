@@ -19,7 +19,7 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
 
             builder.Property(c => c.Cor)
                 .IsRequired()
-                .HasMaxLength(150);
+                .HasMaxLength(10);
 
             builder.Property(c => c.Finalidade)
                 .IsRequired();

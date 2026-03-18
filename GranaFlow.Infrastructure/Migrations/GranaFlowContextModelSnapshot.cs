@@ -35,8 +35,8 @@ namespace GranaFlow.Infrastructure.Migrations
 
                     b.Property<string>("Cor")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -82,7 +82,7 @@ namespace GranaFlow.Infrastructure.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Pessoa");
+                    b.ToTable("Pessoas");
                 });
 
             modelBuilder.Entity("GranaFlow.Domain.Entities.Transacao", b =>
@@ -98,6 +98,9 @@ namespace GranaFlow.Infrastructure.Migrations
 
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("DataTransacao")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -125,7 +128,7 @@ namespace GranaFlow.Infrastructure.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Transacao");
+                    b.ToTable("Transacoes");
                 });
 
             modelBuilder.Entity("GranaFlow.Domain.Entities.Usuario", b =>
@@ -182,13 +185,13 @@ namespace GranaFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("GranaFlow.Domain.Entities.Transacao", b =>
                 {
-                    b.HasOne("GranaFlow.Domain.Entities.Categoria", null)
+                    b.HasOne("GranaFlow.Domain.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("GranaFlow.Domain.Entities.Pessoa", null)
+                    b.HasOne("GranaFlow.Domain.Entities.Pessoa", "Pessoa")
                         .WithMany()
                         .HasForeignKey("PessoaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -199,6 +202,10 @@ namespace GranaFlow.Infrastructure.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Pessoa");
                 });
 #pragma warning restore 612, 618
         }

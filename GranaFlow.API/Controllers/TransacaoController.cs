@@ -55,5 +55,19 @@ namespace GranaFlow.API.Controllers
             var result = await _transacaoService.GetAllAsync();
             return Ok(result);
         }
+
+        [HttpGet("ObterTotaisPessoas")]
+        public async Task<IActionResult> ObterTotaisPessoas()
+        {
+            var result = await _transacaoService.ObterTotaisPessoas();
+            return Ok(result);
+        }
+
+        [HttpGet("ObterTotaisTransacoes")]
+        public async Task<IActionResult> ObterTotaisTransacoes()
+        {
+            var result = await _transacaoService.ObterTotaisTransacoes();
+            return Ok(result);
+        }
     }
 }

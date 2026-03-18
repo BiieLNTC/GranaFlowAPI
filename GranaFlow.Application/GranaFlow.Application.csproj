@@ -10,4 +10,9 @@
     <ProjectReference Include="..\GranaFlow.Domain\GranaFlow.Domain.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="ToolSharp">
+			<HintPath>..\LibsDll\ToolSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

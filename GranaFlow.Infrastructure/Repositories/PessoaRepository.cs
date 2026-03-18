@@ -22,7 +22,7 @@ namespace GranaFlow.Infrastructure.Repositories
 
         public async Task<bool> ExistsAsync(string nome, int id = 0)
         {
-            var result = await _db.Pessoas.AnyAsync(a => a.Nome == nome && a.Id != id);
+            var result = await _db.Pessoas.AnyAsync(a => a.UsuarioId == _infoToken.Id && a.Nome == nome && a.Id != id);
 
             return result;
         }

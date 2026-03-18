@@ -14,7 +14,7 @@ namespace GranaFlow.API.Controllers
         private readonly UsuarioService _service;
         public readonly CryptoUtils _cryptoUtils;
 
-        public UsuarioController(IHttpContextAccessor httpContextAccessor, 
+        public UsuarioController(IHttpContextAccessor httpContextAccessor,
                                 UsuarioService service,
                                 CryptoUtils cryptoUtils,
                                 InfoToken infoToken) : base(httpContextAccessor, infoToken)
@@ -35,8 +35,8 @@ namespace GranaFlow.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            var obj = await _service.Login(login);
-            return Ok(obj);
+            var token = await _service.Login(login);
+            return Ok(new { token });
         }
     }
 }

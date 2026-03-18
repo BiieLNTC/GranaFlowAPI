@@ -24,8 +24,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<CorrelationIdMiddleware>()
     .UseMiddleware<ExceptionMiddleware>()
     .UseMiddleware<RequestLoggingMiddleware>()
-    .UseCors("DefaultCors")
     .UseHttpsRedirection()
+    .UseCors("AllowAllOrigins")
     .UseAuthentication()
     .UseAuthorization();
 

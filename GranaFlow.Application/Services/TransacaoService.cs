@@ -1,7 +1,9 @@
 ﻿using GranaFlow.Application.Auth;
 using GranaFlow.Application.Dtos;
 using GranaFlow.Domain.Entities;
+using GranaFlow.Domain.Enums;
 using GranaFlow.Domain.Interfaces.Repositories;
+using ToolSharp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -68,26 +70,89 @@ namespace GranaFlow.Application.Services
             return await _repo.DeleteAsync(id);
         }
 
-        public async Task<PessoaDto> GetByIdAsync(int id)
+        public async Task<TransacaoDto> GetByIdAsync(int id)
         {
             var transacao = await _repo.GetByIdAsync(id);
-            if (pessoa == null)
-                throw new InvalidOperationException("Pessoa não encontrada.");
+            if (transacao == null)
+                throw new InvalidOperationException("Transação não encontrada.");
 
-            return new PessoaDto(pessoa.Id,
-                                    pessoa.UsuarioId,
-                                    pessoa.Nome,
-                                    pessoa.DataNascimento);
+            return new TransacaoDto(transacao.Id,
+                                    transacao.UsuarioId,
+                                    transacao.CategoriaId,
+                                    string.Empty,
+                                    string.Empty,
+                                    transacao.PessoaId,
+                                    string.Empty,
+                                    transacao.DataTransacao,
+                                    transacao.Descricao,
+                                    transacao.Tipo,
+                                    transacao.Valor);
         }
 
-        public async Task<List<PessoaDto>> GetAllAsync()
+        public async Task<List<TransacaoDto>> GetAllAsync()
         {
-            var pessoas = await _repo.GetAllAsync();
+            var transacoes = await _repo.GetAllAsync();
 
-            return pessoas.Select(s => new PessoaDto(s.Id,
+            return transacoes.Select(s => new TransacaoDto(s.Id,
                                                      s.UsuarioId,
-                                                     s.Nome,
-                                                     s.DataNascimento)).ToList();
+                                                     s.CategoriaId,
+                                                     s.Categoria.Descricao,
+                                                     s.Categoria.Cor,
+                                                     s.PessoaId,
+                                                     s.Pessoa.Nome,
+                                                     s.DataTransacao,
+                                                     s.Descricao,
+                                                     s.Tipo,
+                                                     s.Valor)).ToList();
+        }
+
+        public async Task<List<TotaisTransacoesPessoaDto>> ObterTotaisPessoas()
+        {
+            var groupTransacoes = await _repo.GetTransacoesPorPessoa();
+
+            return groupTransacoes.Select(g => new TotaisTransacoesPessoaDto
+            {
+                Nome = g.Select(s => s.Pessoa.Nome).FirstOrDefault(),
+                Receitas = g.Where(t => t.Tipo == ETipoTransacao.Receita).Sum(t => t.Valor),
+                Despesas = g.Where(t => t.Tipo == ETipoTransacao.Despesa).Sum(t => t.Valor),
+            }).ToList();
+        }
+
+        public async Task<TotaisTransacoesDto> ObterTotaisTransacoes()
+        {
+            var dataInicio = DateExtensions.StartOfMonth(DateTime.Now);
+            var dataFim = DateExtensions.EndOfMonth(DateTime.Now);
+
+            var listTransacoesMes = await _repo.ObterTransacoesByData(dataInicio, dataFim);
+            var saldoTotal = await _repo.ObterSaldoTotal();
+
+            decimal saldoDespesas = 0;
+            decimal saldoReceitas = 0;
+            int totalDespesas = 0;
+            int totalReceitas = 0;
+
+            foreach (var t in listTransacoesMes)
+            {
+                if (t.Tipo == ETipoTransacao.Despesa)
+                {
+                    saldoDespesas += t.Valor;
+                    totalDespesas++;
+                }
+                else
+                {
+                    saldoReceitas += t.Valor;
+                    totalReceitas++;
+                }
+            }
+
+            return new TotaisTransacoesDto
+            {
+                SaldoDespesasMes = saldoDespesas,
+                TotalDespesasMes = totalDespesas,
+                SaldoReceitasMes = saldoReceitas,
+                TotalReceitasMes = totalReceitas,
+                SaldoTotal = saldoTotal
+            };
         }
     }
 }

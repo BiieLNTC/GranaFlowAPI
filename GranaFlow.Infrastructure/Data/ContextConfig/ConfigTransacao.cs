@@ -11,17 +11,19 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
     {
         public void Configure(EntityTypeBuilder<Transacao> builder)
         {
+            builder.HasKey(h => h.Id);
+
             builder.HasOne<Usuario>()
                 .WithMany()
                 .HasForeignKey(t => t.UsuarioId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne<Categoria>()
+            builder.HasOne(h => h.Categoria)
                 .WithMany()
                 .HasForeignKey(t => t.CategoriaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Pessoa>()
+            builder.HasOne(h => h.Pessoa)
                 .WithMany()
                 .HasForeignKey(t => t.PessoaId)
                 .OnDelete(DeleteBehavior.Cascade);

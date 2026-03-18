@@ -1,6 +1,7 @@
 ﻿using GranaFlow.Application.Auth;
 using GranaFlow.Application.Dtos;
 using GranaFlow.Domain.Entities;
+using GranaFlow.Domain.Enums;
 using GranaFlow.Domain.Interfaces.Repositories;
 using GranaFlow.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using ToolSharp.Utils;
 
 namespace GranaFlow.Infrastructure.Repositories
 {
-    internal class TransacaoRepository : ITransacaoRepository
+    public class TransacaoRepository : ITransacaoRepository
     {
         private readonly GranaFlowContext _db;
         public readonly InfoToken _infoToken;
@@ -53,31 +54,43 @@ namespace GranaFlow.Infrastructure.Repositories
             return result > 0;
         }
 
-        public async Task<List<Transacao>> GetByFiltroAsync(FiltroTransacaoDto filtro)
+        public async Task<List<Transacao>> GetAllAsync()
         {
-            var query = _db.Transacoes.Where(w => w.UsuarioId == _infoToken.Id).AsQueryable();
+            return await _db.Transacoes.AsNoTracking()
+                                        .Include(i => i.Categoria)
+                                        .Include(i => i.Pessoa)
+                                        .Where(w => w.UsuarioId == _infoToken.Id)
+                                        .AsSplitQuery()
+                                        .ToListAsync();
+        }
 
-            if (filtro.DataInicio.HasValue)
-            {
-                query = query.Where(t => t.DataTransacao >= filtro.DataInicio.Value);
-            }
+        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorPessoa()
+        {
+            var groupTransacoes = await _db.Transacoes.AsNoTracking()
+                            .Include(i => i.Pessoa)
+                            .Where(w => w.UsuarioId == _infoToken.Id)
+                            .AsSplitQuery()
+                            .GroupBy(g => g.PessoaId)
+                            .ToListAsync();
 
-            if (filtro.DataFim.HasValue)
-            {
-                query = query.Where(t => t.DataTransacao <= filtro.DataFim.Value);
-            }
+            return groupTransacoes;
+        }
 
-            if (filtro.ListUsuariosId.IsNotNullOrEmpty())
-            {
-                query = query.Where(t => filtro.ListUsuariosId.Contains(t.UsuarioId));
-            }
+        public async Task<List<Transacao>> ObterTransacoesByData(DateTime dataInicio, DateTime dataFim)
+        {
+            return await _db.Transacoes.AsNoTracking()
+                                        .Where(w => w.UsuarioId == _infoToken.Id
+                                                && w.DataTransacao >= dataInicio
+                                                && w.DataTransacao <= dataFim)
+                                        .ToListAsync();
+        }
 
-            if (filtro.ListCategoriasId != null && filtro.ListCategoriasId.Any())
-            {
-                query = query.Where(t => filtro.ListCategoriasId.Contains(t.CategoriaId));
-            }
-
-            return await query.ToListAsync();
+        public async Task<decimal> ObterSaldoTotal()
+        {
+            return await _db.Transacoes
+                                .AsNoTracking()
+                                .Where(t => t.UsuarioId == _infoToken.Id)
+                                .SumAsync(t => t.Tipo == ETipoTransacao.Receita ? t.Valor : -t.Valor);
         }
     }
 }

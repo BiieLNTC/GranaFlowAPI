@@ -38,10 +38,12 @@ namespace GranaFlow.API.Extensions
             services.AddScoped<UsuarioService>();
             services.AddScoped<CategoriaService>();
             services.AddScoped<PessoaService>();
+            services.AddScoped<TransacaoService>();
 
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
+            services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 
             services.AddScoped<ITokenService, TokenService>();
 
@@ -91,9 +93,10 @@ namespace GranaFlow.API.Extensions
             {
                 options.AddPolicy("AllowAllOrigins", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:3000")
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
 
