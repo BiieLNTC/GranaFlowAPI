@@ -89,9 +89,9 @@ namespace GranaFlow.Application.Services
                                     transacao.Valor);
         }
 
-        public async Task<List<TransacaoDto>> GetAllAsync()
+        public async Task<List<TransacaoDto>> GetAllAsync(DateTime dataInicial, DateTime dataFinal)
         {
-            var transacoes = await _repo.GetAllAsync();
+            var transacoes = await _repo.GetAllAsync(dataInicial, dataFinal);
 
             return transacoes.Select(s => new TransacaoDto(s.Id,
                                                      s.UsuarioId,
@@ -113,6 +113,19 @@ namespace GranaFlow.Application.Services
             return groupTransacoes.Select(g => new TotaisTransacoesPessoaDto
             {
                 Nome = g.Select(s => s.Pessoa.Nome).FirstOrDefault(),
+                Receitas = g.Where(t => t.Tipo == ETipoTransacao.Receita).Sum(t => t.Valor),
+                Despesas = g.Where(t => t.Tipo == ETipoTransacao.Despesa).Sum(t => t.Valor),
+            }).ToList();
+        }
+
+        public async Task<List<TotaisTransacoesCategoriaDto>> ObterTotaisCategorias()
+        {
+            var groupTransacoes = await _repo.GetTransacoesPorCategoria();
+
+            return groupTransacoes.Select(g => new TotaisTransacoesCategoriaDto
+            {
+                Descricao = g.Select(s => s.Categoria.Descricao).FirstOrDefault(),
+                Cor = g.Select(s => s.Categoria.Cor).FirstOrDefault(),
                 Receitas = g.Where(t => t.Tipo == ETipoTransacao.Receita).Sum(t => t.Valor),
                 Despesas = g.Where(t => t.Tipo == ETipoTransacao.Despesa).Sum(t => t.Valor),
             }).ToList();
@@ -153,6 +166,42 @@ namespace GranaFlow.Application.Services
                 TotalReceitasMes = totalReceitas,
                 SaldoTotal = saldoTotal
             };
+        }
+
+        public async Task<List<TopDespesasDto>> ObterTopDespesas()
+        {
+            var transacoes = await _repo.GetAllDespesas();
+
+            return transacoes
+                .Where(t => t.UsuarioId == _infoToken.Id)
+                .GroupBy(g => g.CategoriaId)
+                .Select(s => new TopDespesasDto
+                {
+                    Cor = s.Select(s => s.Categoria.Cor).FirstOrDefault(),
+                    NomeCategoria = s.Select(s => s.Categoria.Descricao).FirstOrDefault(),
+                    Valor = s.Sum(t => t.Valor)
+                })
+                .OrderByDescending(x => x.Valor)
+                .Take(5)
+                .ToList();
+        }
+
+        public async Task<List<TopreceitasDto>> ObterTopReceitas()
+        {
+            var transacoes = await _repo.GetAllReceitas();
+
+            return transacoes
+                .Where(t => t.UsuarioId == _infoToken.Id)
+                .GroupBy(g => g.CategoriaId)
+                .Select(s => new TopreceitasDto
+                {
+                    Cor = s.Select(s => s.Categoria.Cor).FirstOrDefault(),
+                    NomeCategoria = s.Select(s => s.Categoria.Descricao).FirstOrDefault(),
+                    Valor = s.Sum(t => t.Valor)
+                })
+                .OrderByDescending(x => x.Valor)
+                .Take(5)
+                .ToList();
         }
     }
 }

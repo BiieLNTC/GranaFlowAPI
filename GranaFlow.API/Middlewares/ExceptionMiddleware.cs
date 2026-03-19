@@ -32,7 +32,7 @@
                 {
                     resposta = new
                     {
-                        message = "Ocorreu um erro inesperado.",
+                        message = ex.Message,
                         error = ex.Message,
                         stackTrace = ex.StackTrace
                     };
@@ -41,7 +41,7 @@
                 {
                     resposta = new
                     {
-                        message = "Ocorreu um erro inesperado."
+                        message = ex.Message
                     };
                 }
 

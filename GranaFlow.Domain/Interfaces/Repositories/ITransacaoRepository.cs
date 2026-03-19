@@ -12,11 +12,12 @@ namespace GranaFlow.Domain.Interfaces.Repositories
         Task<bool> UpdateAsync(Transacao transacao);
         Task<Transacao> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int id);
-        Task<List<Transacao>> GetAllAsync();
+        Task<List<Transacao>> GetAllAsync(DateTime? dataInicial, DateTime? dataFinal);
         Task<List<IGrouping<int, Transacao>>> GetTransacoesPorPessoa();
+        Task<List<IGrouping<int, Transacao>>> GetTransacoesPorCategoria();
         Task<List<Transacao>> ObterTransacoesByData(DateTime dataInicio, DateTime dataFim);
-        Task<decimal> ObterSaldoTotal();    
-
-        //Task<List<Transacao>> GetByFiltroAsync(DateTime? dataInicio, DateTime? dataFim, IEnumerable<int> listPessoasId, IEnumerable<int> listCategoriasId);
+        Task<decimal> ObterSaldoTotal();
+        Task<List<Transacao>> GetAllDespesas();
+        Task<List<Transacao>> GetAllReceitas();
     }
 }

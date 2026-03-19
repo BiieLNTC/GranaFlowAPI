@@ -25,7 +25,7 @@ namespace GranaFlow.Application.Services
 
             if (existCategoria)
             {
-                throw new Exception("Já existe uma categoria com esse nome cadastrada!"); ;
+                throw new Exception("Já existe uma categoria com esse nome cadastrada!");
             }
 
             var categoria = new Categoria()

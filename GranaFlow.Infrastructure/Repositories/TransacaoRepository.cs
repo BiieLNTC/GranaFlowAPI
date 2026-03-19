@@ -54,14 +54,27 @@ namespace GranaFlow.Infrastructure.Repositories
             return result > 0;
         }
 
-        public async Task<List<Transacao>> GetAllAsync()
+        public async Task<List<Transacao>> GetAllAsync(DateTime? dataInicial, DateTime? dataFinal)
         {
-            return await _db.Transacoes.AsNoTracking()
-                                        .Include(i => i.Categoria)
-                                        .Include(i => i.Pessoa)
-                                        .Where(w => w.UsuarioId == _infoToken.Id)
-                                        .AsSplitQuery()
-                                        .ToListAsync();
+            var query = _db.Transacoes
+                .AsNoTracking()
+                .Include(i => i.Categoria)
+                .Include(i => i.Pessoa)
+                .Where(w => w.UsuarioId == _infoToken.Id)
+                .AsSplitQuery();
+
+            if (dataInicial.HasValue)
+            {
+                query = query.Where(w => w.DataTransacao >= dataInicial.Value.Date);
+            }
+
+            if (dataFinal.HasValue)
+            {
+                var dataFim = dataFinal.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(w => w.DataTransacao <= dataFim);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorPessoa()
@@ -71,6 +84,18 @@ namespace GranaFlow.Infrastructure.Repositories
                             .Where(w => w.UsuarioId == _infoToken.Id)
                             .AsSplitQuery()
                             .GroupBy(g => g.PessoaId)
+                            .ToListAsync();
+
+            return groupTransacoes;
+        }
+
+        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorCategoria()
+        {
+            var groupTransacoes = await _db.Transacoes.AsNoTracking()
+                            .Include(i => i.Categoria)
+                            .Where(w => w.UsuarioId == _infoToken.Id)
+                            .AsSplitQuery()
+                            .GroupBy(g => g.CategoriaId)
                             .ToListAsync();
 
             return groupTransacoes;
@@ -91,6 +116,24 @@ namespace GranaFlow.Infrastructure.Repositories
                                 .AsNoTracking()
                                 .Where(t => t.UsuarioId == _infoToken.Id)
                                 .SumAsync(t => t.Tipo == ETipoTransacao.Receita ? t.Valor : -t.Valor);
+        }
+
+        public async Task<List<Transacao>> GetAllDespesas()
+        {
+            return await _db.Transacoes.AsNoTracking()
+                                        .Include(i => i.Categoria)
+                                        .Where(w => w.UsuarioId == _infoToken.Id && w.Tipo == ETipoTransacao.Despesa)
+                                        .AsSplitQuery()
+                                        .ToListAsync();
+        }
+
+        public async Task<List<Transacao>> GetAllReceitas()
+        {
+            return await _db.Transacoes.AsNoTracking()
+                                        .Include(i => i.Categoria)
+                                        .Where(w => w.UsuarioId == _infoToken.Id && w.Tipo == ETipoTransacao.Receita)
+                                        .AsSplitQuery()
+                                        .ToListAsync();
         }
     }
 }

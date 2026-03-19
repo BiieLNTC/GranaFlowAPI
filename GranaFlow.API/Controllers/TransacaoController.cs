@@ -50,9 +50,9 @@ namespace GranaFlow.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery(Name ="dataInicial")] DateTime dataInicial, [FromQuery(Name = "dataFinal")] DateTime dataFinal)
         {
-            var result = await _transacaoService.GetAllAsync();
+            var result = await _transacaoService.GetAllAsync(dataInicial, dataFinal);
             return Ok(result);
         }
 
@@ -63,10 +63,31 @@ namespace GranaFlow.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("ObterTotaisCategorias")]
+        public async Task<IActionResult> ObterTotaisCategorias()
+        {
+            var result = await _transacaoService.ObterTotaisCategorias();
+            return Ok(result);
+        }
+
         [HttpGet("ObterTotaisTransacoes")]
         public async Task<IActionResult> ObterTotaisTransacoes()
         {
             var result = await _transacaoService.ObterTotaisTransacoes();
+            return Ok(result);
+        }
+
+        [HttpGet("ObterTopDespesas")]
+        public async Task<IActionResult> ObterTopDespesas()
+        {
+            var result = await _transacaoService.ObterTopDespesas();
+            return Ok(result);
+        }
+
+        [HttpGet("ObterTopReceitas")]
+        public async Task<IActionResult> ObterTopReceitas()
+        {
+            var result = await _transacaoService.ObterTopReceitas();
             return Ok(result);
         }
     }
