@@ -29,6 +29,17 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
 
             builder.Property(c => c.CadastradoEm)
                 .IsRequired();
+
+            builder.HasData(new[]
+            {
+                new Usuario
+                {
+                    Id = 1,
+                    Nome = "Admin",
+                    Email = "admin@admin.com",
+                    SenhaHash = "Aw3lOwehYYMUt9kO7CxqSA==", //123456
+                }
+            });
         }
     }
 }

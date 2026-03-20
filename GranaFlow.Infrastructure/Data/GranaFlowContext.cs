@@ -23,6 +23,7 @@ namespace GranaFlow.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new ConfigCategoria());
             modelBuilder.ApplyConfiguration(new ConfigPessoa());
             modelBuilder.ApplyConfiguration(new ConfigTransacao());
+            modelBuilder.ApplyConfiguration(new ConfigUsuario());
         }
     }
 }
