@@ -57,16 +57,16 @@ namespace GranaFlow.API.Controllers
         }
 
         [HttpGet("ObterTotaisPessoas")]
-        public async Task<IActionResult> ObterTotaisPessoas()
+        public async Task<IActionResult> ObterTotaisPessoas([FromQuery(Name = "dataInicial")] DateTime dataInicial, [FromQuery(Name = "dataFinal")] DateTime dataFinal)
         {
-            var result = await _transacaoService.ObterTotaisPessoas();
+            var result = await _transacaoService.ObterTotaisPessoas(dataInicial, dataFinal);
             return Ok(result);
         }
 
         [HttpGet("ObterTotaisCategorias")]
-        public async Task<IActionResult> ObterTotaisCategorias()
+        public async Task<IActionResult> ObterTotaisCategorias([FromQuery(Name = "dataInicial")] DateTime dataInicial, [FromQuery(Name = "dataFinal")] DateTime dataFinal)
         {
-            var result = await _transacaoService.ObterTotaisCategorias();
+            var result = await _transacaoService.ObterTotaisCategorias(dataInicial, dataFinal);
             return Ok(result);
         }
 
@@ -78,16 +78,16 @@ namespace GranaFlow.API.Controllers
         }
 
         [HttpGet("ObterTopDespesas")]
-        public async Task<IActionResult> ObterTopDespesas()
+        public async Task<IActionResult> ObterTopDespesas([FromQuery(Name = "dataInicial")] DateTime dataInicial, [FromQuery(Name = "dataFinal")] DateTime dataFinal)
         {
-            var result = await _transacaoService.ObterTopDespesas();
+            var result = await _transacaoService.ObterTopDespesas(dataInicial, dataFinal);
             return Ok(result);
         }
 
         [HttpGet("ObterTopReceitas")]
-        public async Task<IActionResult> ObterTopReceitas()
+        public async Task<IActionResult> ObterTopReceitas([FromQuery(Name = "dataInicial")] DateTime dataInicial, [FromQuery(Name = "dataFinal")] DateTime dataFinal)
         {
-            var result = await _transacaoService.ObterTopReceitas();
+            var result = await _transacaoService.ObterTopReceitas(dataInicial, dataFinal);
             return Ok(result);
         }
     }

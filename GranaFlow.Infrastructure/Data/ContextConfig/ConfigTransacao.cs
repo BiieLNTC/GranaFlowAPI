@@ -13,6 +13,23 @@ namespace GranaFlow.Infrastructure.Data.ContextConfig
         {
             builder.HasKey(h => h.Id);
 
+            builder.Property(c => c.DataTransacao)
+                .IsRequired();
+
+            builder.Property(c => c.Descricao)
+                .IsRequired()
+                .HasMaxLength(400);
+
+            builder.Property(c => c.Tipo)
+                .IsRequired();
+
+            builder.Property(c => c.Valor)
+                .IsRequired()
+                .HasPrecision(20, 4);
+
+            builder.Property(c => c.CadastradoEm)
+                .IsRequired();
+
             builder.HasOne<Usuario>()
                 .WithMany()
                 .HasForeignKey(t => t.UsuarioId)

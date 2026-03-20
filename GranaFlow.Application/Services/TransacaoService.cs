@@ -106,9 +106,9 @@ namespace GranaFlow.Application.Services
                                                      s.Valor)).ToList();
         }
 
-        public async Task<List<TotaisTransacoesPessoaDto>> ObterTotaisPessoas()
+        public async Task<List<TotaisTransacoesPessoaDto>> ObterTotaisPessoas(DateTime dataInicial, DateTime dataFinal)
         {
-            var groupTransacoes = await _repo.GetTransacoesPorPessoa();
+            var groupTransacoes = await _repo.GetTransacoesPorPessoa(dataInicial, dataFinal);
 
             return groupTransacoes.Select(g => new TotaisTransacoesPessoaDto
             {
@@ -118,9 +118,9 @@ namespace GranaFlow.Application.Services
             }).ToList();
         }
 
-        public async Task<List<TotaisTransacoesCategoriaDto>> ObterTotaisCategorias()
+        public async Task<List<TotaisTransacoesCategoriaDto>> ObterTotaisCategorias(DateTime dataInicial, DateTime dataFinal)
         {
-            var groupTransacoes = await _repo.GetTransacoesPorCategoria();
+            var groupTransacoes = await _repo.GetTransacoesPorCategoria(dataInicial, dataFinal);
 
             return groupTransacoes.Select(g => new TotaisTransacoesCategoriaDto
             {
@@ -168,9 +168,9 @@ namespace GranaFlow.Application.Services
             };
         }
 
-        public async Task<List<TopDespesasDto>> ObterTopDespesas()
+        public async Task<List<TopDespesasDto>> ObterTopDespesas(DateTime dataInicial, DateTime dataFinal)
         {
-            var transacoes = await _repo.GetAllDespesas();
+            var transacoes = await _repo.GetAllDespesas(dataInicial, dataFinal);
 
             return transacoes
                 .Where(t => t.UsuarioId == _infoToken.Id)
@@ -186,9 +186,9 @@ namespace GranaFlow.Application.Services
                 .ToList();
         }
 
-        public async Task<List<TopreceitasDto>> ObterTopReceitas()
+        public async Task<List<TopreceitasDto>> ObterTopReceitas(DateTime dataInicial, DateTime dataFinal)
         {
-            var transacoes = await _repo.GetAllReceitas();
+            var transacoes = await _repo.GetAllReceitas(dataInicial, dataFinal);
 
             return transacoes
                 .Where(t => t.UsuarioId == _infoToken.Id)

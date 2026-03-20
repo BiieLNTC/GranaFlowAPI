@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ToolSharp.Utils;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GranaFlow.Infrastructure.Repositories
 {
@@ -65,7 +66,7 @@ namespace GranaFlow.Infrastructure.Repositories
 
             if (dataInicial.HasValue)
             {
-                query = query.Where(w => w.DataTransacao >= dataInicial.Value.Date);
+                query = query.Where(w => w.DataTransacao >= dataInicial.Value);
             }
 
             if (dataFinal.HasValue)
@@ -77,28 +78,47 @@ namespace GranaFlow.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorPessoa()
+        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorPessoa(DateTime? dataInicial, DateTime? dataFinal)
         {
-            var groupTransacoes = await _db.Transacoes.AsNoTracking()
+            var groupTransacoes = _db.Transacoes.AsNoTracking()
                             .Include(i => i.Pessoa)
                             .Where(w => w.UsuarioId == _infoToken.Id)
-                            .AsSplitQuery()
-                            .GroupBy(g => g.PessoaId)
-                            .ToListAsync();
+                            .AsSplitQuery();
 
-            return groupTransacoes;
+
+            if (dataInicial.HasValue)
+            {
+                groupTransacoes = groupTransacoes.Where(w => w.DataTransacao >= dataInicial.Value);
+            }
+
+            if (dataFinal.HasValue)
+            {
+                var dataFim = dataFinal.Value.Date.AddDays(1).AddTicks(-1);
+                groupTransacoes = groupTransacoes.Where(w => w.DataTransacao <= dataFim);
+            }
+
+            return await groupTransacoes.GroupBy(g => g.PessoaId).ToListAsync();
         }
 
-        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorCategoria()
+        public async Task<List<IGrouping<int, Transacao>>> GetTransacoesPorCategoria(DateTime? dataInicial, DateTime? dataFinal)
         {
-            var groupTransacoes = await _db.Transacoes.AsNoTracking()
+            var groupTransacoes = _db.Transacoes.AsNoTracking()
                             .Include(i => i.Categoria)
                             .Where(w => w.UsuarioId == _infoToken.Id)
-                            .AsSplitQuery()
-                            .GroupBy(g => g.CategoriaId)
-                            .ToListAsync();
+                            .AsSplitQuery();
 
-            return groupTransacoes;
+            if (dataInicial.HasValue)
+            {
+                groupTransacoes = groupTransacoes.Where(w => w.DataTransacao >= dataInicial.Value);
+            }
+
+            if (dataFinal.HasValue)
+            {
+                var dataFim = dataFinal.Value.Date.AddDays(1).AddTicks(-1);
+                groupTransacoes = groupTransacoes.Where(w => w.DataTransacao <= dataFim);
+            }
+
+            return await groupTransacoes.GroupBy(g => g.CategoriaId).ToListAsync();
         }
 
         public async Task<List<Transacao>> ObterTransacoesByData(DateTime dataInicio, DateTime dataFim)
@@ -118,22 +138,47 @@ namespace GranaFlow.Infrastructure.Repositories
                                 .SumAsync(t => t.Tipo == ETipoTransacao.Receita ? t.Valor : -t.Valor);
         }
 
-        public async Task<List<Transacao>> GetAllDespesas()
+        public async Task<List<Transacao>> GetAllDespesas(DateTime? dataInicial, DateTime? dataFinal)
         {
-            return await _db.Transacoes.AsNoTracking()
+            var query = _db.Transacoes.AsNoTracking()
                                         .Include(i => i.Categoria)
                                         .Where(w => w.UsuarioId == _infoToken.Id && w.Tipo == ETipoTransacao.Despesa)
-                                        .AsSplitQuery()
-                                        .ToListAsync();
+                                        .AsSplitQuery();
+
+
+            if (dataInicial.HasValue)
+            {
+                query = query.Where(w => w.DataTransacao >= dataInicial.Value);
+            }
+
+            if (dataFinal.HasValue)
+            {
+                var dataFim = dataFinal.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(w => w.DataTransacao <= dataFim);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public async Task<List<Transacao>> GetAllReceitas()
+        public async Task<List<Transacao>> GetAllReceitas(DateTime? dataInicial, DateTime? dataFinal)
         {
-            return await _db.Transacoes.AsNoTracking()
+            var query = _db.Transacoes.AsNoTracking()
                                         .Include(i => i.Categoria)
                                         .Where(w => w.UsuarioId == _infoToken.Id && w.Tipo == ETipoTransacao.Receita)
-                                        .AsSplitQuery()
-                                        .ToListAsync();
+                                        .AsSplitQuery();
+
+            if (dataInicial.HasValue)
+            {
+                query = query.Where(w => w.DataTransacao >= dataInicial.Value);
+            }
+
+            if (dataFinal.HasValue)
+            {
+                var dataFim = dataFinal.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(w => w.DataTransacao <= dataFim);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

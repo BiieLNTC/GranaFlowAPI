@@ -45,10 +45,18 @@ namespace GranaFlow.Infrastructure.Repositories
         }
         public async Task<bool> DeleteAsync(int id)
         {
-            var result = await _db.Categorias.Where(w => w.UsuarioId == _infoToken.Id && w.Id == id)
-                                      .ExecuteDeleteAsync();
+            try
+            {
+                var result = await _db.Categorias.Where(w => w.UsuarioId == _infoToken.Id && w.Id == id)
+                                          .ExecuteDeleteAsync();
 
-            return result > 0;
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Não é possível excluir a categoria porque existem transações vinculadas a ela.");
+            }
+
         }
 
         public async Task<Categoria> GetByIdAsync(int id)

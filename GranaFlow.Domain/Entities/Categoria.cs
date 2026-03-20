@@ -9,8 +9,8 @@ namespace GranaFlow.Domain.Entities
 {
     public class Categoria
     {
-        public int Id { get; set; } // Key
-        public int UsuarioId { get; set; } // Foreign Key - Usuario
+        public int Id { get; set; } 
+        public int UsuarioId { get; set; } 
         public string Descricao { get; set; }        
         public ETipoCategoria Finalidade { get; set; }
         public string Cor { get; set; }
